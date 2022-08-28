@@ -2,24 +2,33 @@
 #include <stdlib.h>
 #include <string.h>
 
-int main(){
-  char *palavra[50];
+int main() {
+  char *texto[50];
   char *arq;
+  int iteracao = 0;
+  int caloria;
 
-  FILE *farq;
+  FILE *open_arq;
 
-  farq = fopen("arquivoTeste.csv", "r");
+  open_arq = fopen("arquivoTeste.csv", "r");
 
-  while (EOF != fscanf(farq, "%[^\n]\n", palavra)) {
-    arq = strtok(palavra, ";");
+  while (EOF != fscanf(open_arq, "%[^\n]\n", texto)) {
+    arq = strtok(texto, ";");
     while (arq != NULL) {
-      printf("'%s' ", arq);
+      //printf("'%s' ", arq);
+      if (iteracao == 0) {
+        // leitura do nome do alimento;
+        iteracao = 1;
+      } else { // leitura da caloria
+        caloria = atoi(arq);
+        printf("/ %d /\n", caloria);
+        iteracao = 0;
+      }
       arq = strtok(NULL, ";");
-      system("pause");
     }
-    printf("%s\n", "");
+    printf("\n");
   }
-  fclose(farq);
+  fclose(open_arq);
 
   system("pause");
   system("cls");
