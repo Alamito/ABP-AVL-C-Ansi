@@ -13,10 +13,14 @@ typedef struct no { // estrutura da arvore
   struct no *esq;
 } noABP;
 
-Alimento ler_alimento() {
+Alimento ler_alimento(char *nomeAlimento, int calAlimento) {
   Alimento alimento;
-  fgets(alimento.nome, 49, stdin);
-  scanf("%d", &alimento.caloria);
+  //printf("%s", nomeAlimento);
+  strcpy(alimento.nome, nomeAlimento);
+  //alimento.caloria = calAlimento;
+  //fgets(alimento.nome, 49, stdin);
+  alimento.caloria = calAlimento;
+  //scanf("%d", &alimento.caloria);
   return alimento;
 }
 
@@ -37,6 +41,32 @@ noABP *inserir_versao_1(noABP *raiz, Alimento a) {
     else
       raiz->dir = inserir_versao_1(raiz->dir, a);
     return raiz;
+  }
+}
+
+noABP *inserir_versao_2(noABP *raiz, Alimento a) {
+  if (raiz == NULL) {
+    noABP *aux = malloc(sizeof(noABP));
+    aux->alimento = a;
+    aux->esq = NULL;
+    aux->dir = NULL;
+    return aux;
+  } else {
+    if (strcmp(a.nome, raiz->alimento.nome) < 0) {
+      //printf("antes");
+      raiz->esq = inserir_versao_1(raiz->esq, a);
+    } else if (strcmp(a.nome, raiz->alimento.nome) == 0) {
+      //printf("igual");
+      raiz->esq = inserir_versao_1(raiz->esq, a);
+    } else {
+      //printf("depois");
+      raiz->dir = inserir_versao_1(raiz->dir, a);
+    }
+      /*if (a.caloria < raiz->alimento.caloria)
+        raiz->esq = inserir_versao_1(raiz->esq, a);
+      else
+        raiz->dir = inserir_versao_1(raiz->dir, a);*/
+      return raiz;
   }
 }
 
@@ -81,15 +111,12 @@ void imprimir_versao_1(noABP *raiz) { // 50 25 30 100
   }
 }
 
-void Desenha(
-    noABP *a,
-    int nivel) { // funcao que imprime a arvore de um modo mais intuitivo
+void Desenha(noABP *a, int nivel) { // funcao que imprime a arvore de um modo mais intuitivo
   int x;
-
   if (a != NULL) {
     for (x = 1; x <= nivel; x++)
       printf("=");
-    printf("%s", a->alimento.nome);
+    printf("%s\n", a->alimento.nome);
     printf("%d\n", a->alimento.caloria);
     if (a->esq != NULL)
       Desenha(a->esq, (nivel + 1));
@@ -101,6 +128,7 @@ void Desenha(
 int main() {
   noABP *raiz = NULL;
   int opcao = 1;
+
   /*char *texto[50];
   char *arq;
   int iteracao = 0;
@@ -108,17 +136,22 @@ int main() {
 
   FILE *open_arq; //ponteiro para file*/
 
-  while (opcao != 0) {
-    raiz = inserir_versao_1(raiz, ler_alimento());
+  raiz = inserir_versao_2(raiz, ler_alimento("cebola", 100));
+  raiz = inserir_versao_2(raiz, ler_alimento("melao", 30));
+  raiz = inserir_versao_2(raiz, ler_alimento("goiaba", 70));
+  raiz = inserir_versao_2(raiz, ler_alimento("abacate", 10));
+  raiz = inserir_versao_2(raiz, ler_alimento("beterrava", 80));
+
+  /*while (opcao != 0) {
+    raiz = inserir_versao_1(raiz, ler_alimento("banana", 50));
     scanf("%d", &opcao);
     fflush(stdin);
-  }
+  }*/
 
   // imprimir_versao_1(raiz);
   Desenha(raiz, 1);
   printf("\n");
-  printf("folhas = %d | nos = %d | altura = %d", quantidade_folhas(raiz),
-         quantidade_nos(raiz), altura(raiz));
+  printf("folhas = %d | nos = %d | altura = %d", quantidade_folhas(raiz), quantidade_nos(raiz), altura(raiz));
 
   /*open_arq = fopen("arquivoTeste.csv", "r"); //abre o arquivo
 
@@ -138,9 +171,10 @@ int main() {
     }
     printf("\n");
   }
-  fclose(open_arq);
+  fclose(open_arq);*/
+  printf("\n");
 
   system("pause");
-  system("cls");*/
+  system("cls");
   return 0;
 }
