@@ -42,7 +42,8 @@ noABP *inserir_versao_1(
   }
 }
 
-noABP *inserir_versao_2(noABP *raiz, Alimento a) { // insere de acordo com o alfabeto
+noABP *inserir_versao_2(noABP *raiz,
+                        Alimento a) { // insere de acordo com o alfabeto
   if (raiz == NULL) {
     noABP *aux = malloc(sizeof(noABP));
     aux->alimento = a;
@@ -50,7 +51,8 @@ noABP *inserir_versao_2(noABP *raiz, Alimento a) { // insere de acordo com o alf
     aux->dir = NULL;
     return aux;
   } else {
-    if (strcmp(a.nome, raiz->alimento.nome) < 0) { // se o novo no comecar com uma letra menor
+    if (strcmp(a.nome, raiz->alimento.nome) <
+        0) { // se o novo no comecar com uma letra menor
       raiz->esq = inserir_versao_2(raiz->esq, a);
     } else if (strcmp(a.nome, raiz->alimento.nome) == 0) { // se forem iguais
       raiz->esq = inserir_versao_2(raiz->dir, a);
@@ -79,10 +81,6 @@ int quantidade_nos(noABP *raiz) {
     return 0;
   else
     return 1 + quantidade_nos(raiz->esq) + quantidade_nos(raiz->dir);
-
-  // operador ternário
-  // return (raiz == NULL)? 0: 1 + quantidade_nos(raiz->esquerda) +
-  // quantidade_nos(raiz->direita);
 }
 
 int quantidade_folhas(noABP *raiz) {
@@ -102,13 +100,13 @@ void imprimir_versao_1(noABP *raiz) { // 50 25 30 100
   }
 }
 
-void Desenha(
-    noABP *a,
-    int nivel) { // funcao que imprime a arvore de um modo mais intuitivo
+void Desenha(noABP *a, int nivel) { // funcao que imprime a arvore de um modo mais intuitivo
   int x;
+
   if (a != NULL) {
-    for (x = 1; x <= nivel; x++)
+    for (x = 1; x <= nivel; x++) {
       printf("=");
+    }
     printf("%s\n", a->alimento.nome);
     printf("%d\n", a->alimento.caloria);
     if (a->esq != NULL)
@@ -118,21 +116,17 @@ void Desenha(
   }
 }
 
-noABP *leituraArq(noABP *raiz) {
-  char *texto[50];
-  char nomeAlimento[50];
-  char *arq;
-  int iteracao = 0;
-  int caloria;
+noABP *leituraArqCalorias(noABP *raiz) {
+  char *texto[50], nomeAlimento[50], *arq;
+  int iteracao = 0, caloria;
   FILE *open_arq; // ponteiro para file
 
-  open_arq = fopen("1000Shuffled.csv", "r"); // abre o arquivo
+  open_arq = fopen("arquivoTeste.csv", "r"); // abre o arquivo
 
   while (EOF != fscanf(open_arq, "%[^\n]\n", texto)) {
     arq = strtok(texto, ";");
     while (arq != NULL) {
-      if (iteracao == 0) {
-        // leitura do nome do alimento;
+      if (iteracao == 0) { // leitura do nome do alimento;
         strcpy(nomeAlimento, arq);
         iteracao = 1;
       } else { // leitura da caloria
@@ -147,15 +141,61 @@ noABP *leituraArq(noABP *raiz) {
   return raiz;
 }
 
+void leituraArqNutri(noABP *raiz) {
+  char *texto[50], nomeAlimento[50], *arq;
+  int iteracao = 0, caloria;
+  FILE *open_arq; // ponteiro para file
+
+  open_arq = fopen("day1.csv", "r"); // abre o arquivo
+
+  while (EOF != fscanf(open_arq, "%[^\n]\n", texto)) {
+    arq = strtok(texto, ";");
+    while (arq != NULL) {
+      if (iteracao == 0) { // leitura do nome do alimento;
+        strcpy(nomeAlimento, arq);
+        iteracao = 1;
+      } else { // leitura da caloria
+        caloria = atoi(arq);
+        iteracao = 0;
+        if (!(procuraABP(raiz, nomeAlimento, caloria))) {  // procura na ABP o nome do alimento
+          printf("Alimento nao encontrado!\n");
+        }
+      }
+      arq = strtok(NULL, ";");
+    }
+  }
+  fclose(open_arq);
+}
+
+int procuraABP(noABP *raiz, char *nomeAlimento, int caloria) {
+  while (raiz != NULL) {
+    if (strcmp(nomeAlimento, raiz->alimento.nome) == 0) {
+      printf("%s | %s\n", nomeAlimento, raiz->alimento.nome);
+      system("pause");
+      return 1; // se achou vai retornar verdadeiro
+    } else if (strcmp(nomeAlimento, raiz->alimento.nome) > 0) { // se a letra do nome do alimento for maior q a letra do nodo vai para a direita
+      raiz = raiz->dir;
+    } else {  // se a letra do nome do alimento for maior q a letra do nodo vai para a esquerda
+      raiz = raiz->esq;
+    }
+  }
+  return 0; // se nao achou vai retornar falso
+}
+
 int main() {
   noABP *raiz = NULL;
 
-  raiz = leituraArq(raiz);
-  //imprimir_versao_1(raiz);
+  raiz = leituraArqCalorias(raiz);
+  leituraArqNutri(raiz);
+
+  /*raiz = leituraArqCalorias(raiz);
+  // imprimir_versao_1(raiz);
   //Desenha(raiz, 1);
+  //printf("%d", raiz->alimento.caloria);
   printf("\n");
-  printf("folhas = %d | nos = %d | altura = %d", quantidade_folhas(raiz), quantidade_nos(raiz), altura(raiz));
-  printf("\n");
+  printf("folhas = %d | nos = %d | altura = %d", quantidade_folhas(raiz),
+         quantidade_nos(raiz), altura(raiz));
+  printf("\n");*/
 
   system("pause");
   system("cls");
