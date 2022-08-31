@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+int totalCalorias = 0;
+
 typedef struct {
   char nome[50];
   int caloria;
@@ -121,7 +123,7 @@ noABP *leituraArqCalorias(noABP *raiz) {
   int iteracao = 0, caloria;
   FILE *open_arq; // ponteiro para file
 
-  open_arq = fopen("arquivoTeste.csv", "r"); // abre o arquivo
+  open_arq = fopen("1000Shuffled.csv", "r"); // abre o arquivo
 
   while (EOF != fscanf(open_arq, "%[^\n]\n", texto)) {
     arq = strtok(texto, ";");
@@ -185,9 +187,10 @@ void exitAlimentoCaloria(char *nomeAlimento, int porcaoNutri, int caloriaAliment
   int quantidadeCalorias;
 
   quantidadeCalorias = (caloriaAlimento * porcaoNutri) / 100; //regra de 3 para calculo das calorias ingeridas
+  totalCalorias += quantidadeCalorias;
 
-  printf("quantidade de calorias ingeridas no alimento %s = %d\n", nomeAlimento, quantidadeCalorias);
-  system("pause");
+  //printf("quantidade de calorias ingeridas no alimento %s = %d\n", nomeAlimento, quantidadeCalorias);
+  printf("total calorias = %d\n", totalCalorias);
 }
 
 int main() {
@@ -195,6 +198,7 @@ int main() {
 
   raiz = leituraArqCalorias(raiz);
   leituraArqNutri(raiz);
+
 
   /*raiz = leituraArqCalorias(raiz);
   // imprimir_versao_1(raiz);
