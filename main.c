@@ -143,7 +143,7 @@ noABP *leituraArqCalorias(noABP *raiz) {
 
 void leituraArqNutri(noABP *raiz) {
   char *texto[50], nomeAlimento[50], *arq;
-  int iteracao = 0, caloria;
+  int iteracao = 0, porcao;
   FILE *open_arq; // ponteiro para file
 
   open_arq = fopen("day1.csv", "r"); // abre o arquivo
@@ -154,11 +154,11 @@ void leituraArqNutri(noABP *raiz) {
       if (iteracao == 0) { // leitura do nome do alimento;
         strcpy(nomeAlimento, arq);
         iteracao = 1;
-      } else { // leitura da caloria
-        caloria = atoi(arq);
+      } else { // leitura da porcao
+        porcao = atoi(arq);
         iteracao = 0;
-        if (!(procuraABP(raiz, nomeAlimento, caloria))) {  // procura na ABP o nome do alimento
-          printf("Alimento nao encontrado!\n");
+        if (!(procuraABP(raiz, nomeAlimento, porcao))) {  // procura na ABP o nome do alimento
+          printf("Alimento %s nao encontrado!\n", nomeAlimento);
         }
       }
       arq = strtok(NULL, ";");
@@ -167,19 +167,27 @@ void leituraArqNutri(noABP *raiz) {
   fclose(open_arq);
 }
 
-int procuraABP(noABP *raiz, char *nomeAlimento, int caloria) {
+int procuraABP(noABP *raiz, char *nomeAlimento, int porcao) {
   while (raiz != NULL) {
-    if (strcmp(nomeAlimento, raiz->alimento.nome) == 0) {
-      printf("%s | %s\n", nomeAlimento, raiz->alimento.nome);
-      system("pause");
+    if (strcmp(nomeAlimento, raiz->alimento.nome) == 0) { // se o nome do alimento for igual ao nome do alimento do nodo
+      exitAlimentoCaloria(nomeAlimento, raiz->alimento.caloria, porcao);
       return 1; // se achou vai retornar verdadeiro
-    } else if (strcmp(nomeAlimento, raiz->alimento.nome) > 0) { // se a letra do nome do alimento for maior q a letra do nodo vai para a direita
+    } else if (strcmp(nomeAlimento, raiz->alimento.nome) > 0) { // se a letra do nome do alimento for maior q a letra do alimento do nodo vai para a direita
       raiz = raiz->dir;
-    } else {  // se a letra do nome do alimento for menor q a letra do nodo vai para a esquerda
+    } else {  // se a letra do nome do alimento for menor q a letra do alimento do nodo vai para a esquerda
       raiz = raiz->esq;
     }
   }
   return 0; // se nao achou vai retornar falso
+}
+
+void exitAlimentoCaloria(char *nomeAlimento, int porcaoNutri, int caloriaAlimento) {
+  int quantidadeCalorias;
+
+  quantidadeCalorias = (caloriaAlimento * porcaoNutri) / 100; //regra de 3 para calculo das calorias ingeridas
+
+  printf("quantidade de calorias ingeridas no alimento %s = %d\n", nomeAlimento, quantidadeCalorias);
+  system("pause");
 }
 
 int main() {
