@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-int totalCalorias = 0;
+// ---------------- VARIAVEIS GLOBAIS ---------------------
+int totalCalorias = 0;                                   //
+// --------------------------------------------------------
 
 typedef struct {
   char nome[50];
@@ -189,8 +191,8 @@ void exitAlimentoCaloria(char *nomeAlimento, int porcaoNutri, int caloriaAliment
   quantidadeCalorias = (caloriaAlimento * porcaoNutri) / 100; //regra de 3 para calculo das calorias ingeridas
   totalCalorias += quantidadeCalorias;
 
-  //printf("quantidade de calorias ingeridas no alimento %s = %d\n", nomeAlimento, quantidadeCalorias);
-  printf("total calorias = %d\n", totalCalorias);
+  printf("quantidade de calorias ingeridas no alimento %s = %d\n", nomeAlimento, quantidadeCalorias);
+  //printf("total calorias = %d\n", totalCalorias); // totalCalorias eh uma variavel global
 }
 
 int main() {
