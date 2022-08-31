@@ -175,7 +175,7 @@ int procuraABP(noABP *raiz, char *nomeAlimento, int caloria) {
       return 1; // se achou vai retornar verdadeiro
     } else if (strcmp(nomeAlimento, raiz->alimento.nome) > 0) { // se a letra do nome do alimento for maior q a letra do nodo vai para a direita
       raiz = raiz->dir;
-    } else {  // se a letra do nome do alimento for maior q a letra do nodo vai para a esquerda
+    } else {  // se a letra do nome do alimento for menor q a letra do nodo vai para a esquerda
       raiz = raiz->esq;
     }
   }
