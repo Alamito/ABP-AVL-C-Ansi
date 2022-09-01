@@ -6,8 +6,8 @@
 #define TABELA_NUTRI "day1.csv"
 
 //----------------- VARIAVEIS GLOBAIS ---------------------
-int totalCalorias = 0;                                   //
-int comp = 0;                                            //
+int totalCalorias = 0;
+int comp = 1; // inicia com 1 por causa do while
 //---------------------------------------------------------
 
 typedef struct {
@@ -108,7 +108,9 @@ void imprimir_versao_1(noABP *raiz) { // 50 25 30 100
   }
 }
 
-void Desenha(noABP *a, int nivel) { // funcao que imprime a arvore de um modo mais intuitivo
+void Desenha(
+    noABP *a,
+    int nivel) { // funcao que imprime a arvore de um modo mais intuitivo
   int x;
 
   if (a != NULL) {
@@ -165,7 +167,8 @@ void leituraArqNutri(noABP *raiz) {
       } else { // leitura da porcao
         porcao = atoi(arq);
         iteracao = 0;
-        if (!(procuraABP(raiz, nomeAlimento, porcao))) {  // procura na ABP o nome do alimento
+        if (!(procuraABP(raiz, nomeAlimento,
+                         porcao))) { // procura na ABP o nome do alimento
           printf("Alimento %s nao encontrado!\n", nomeAlimento);
         }
       }
@@ -178,28 +181,36 @@ void leituraArqNutri(noABP *raiz) {
 int procuraABP(noABP *raiz, char *nomeAlimento, int porcao) {
   while (raiz != NULL) {
     comp++;
-    if (strcmp(nomeAlimento, raiz->alimento.nome) == 0) { // se o nome do alimento for igual ao nome do alimento do nodo
+    if (strcmp(nomeAlimento, raiz->alimento.nome) ==
+        0) { // se o nome do alimento for igual ao nome do alimento do nodo
       exitAlimentoCaloria(nomeAlimento, raiz->alimento.caloria, porcao);
       return 1; // se achou vai retornar verdadeiro
       comp++;
-    } else if (strcmp(nomeAlimento, raiz->alimento.nome) > 0) { // se a letra do nome do alimento for maior q a letra do alimento do nodo vai para a direita
+    } else if (strcmp(nomeAlimento, raiz->alimento.nome) >
+               0) { // se a letra do nome do alimento for maior q a letra do
+                    // alimento do nodo vai para a direita
       raiz = raiz->dir;
       comp++;
-    } else {  // se a letra do nome do alimento for menor q a letra do alimento do nodo vai para a esquerda
+    } else { // se a letra do nome do alimento for menor q a letra do alimento
+             // do nodo vai para a esquerda
       raiz = raiz->esq;
     }
   }
   return 0; // se nao achou vai retornar falso
 }
 
-void exitAlimentoCaloria(char *nomeAlimento, int porcaoNutri, int caloriaAlimento) {
+void exitAlimentoCaloria(char *nomeAlimento, int porcaoNutri,
+                         int caloriaAlimento) {
   int quantidadeCalorias;
 
-  quantidadeCalorias = (caloriaAlimento * porcaoNutri) / 100; //regra de 3 para calculo das calorias ingeridas
+  quantidadeCalorias = (caloriaAlimento * porcaoNutri) /
+                       100; // regra de 3 para calculo das calorias ingeridas
   totalCalorias += quantidadeCalorias;
 
-  //printf("quantidade de calorias ingeridas no alimento %s = %d\n", nomeAlimento, quantidadeCalorias);
-  printf("total calorias = %d\n", totalCalorias); // totalCalorias eh uma variavel global
+  // printf("quantidade de calorias ingeridas no alimento %s = %d\n",
+  // nomeAlimento, quantidadeCalorias);
+  printf("total calorias = %d\n",
+         totalCalorias); // totalCalorias eh uma variavel global
 }
 
 int main() {
