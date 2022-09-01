@@ -2,9 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-// ---------------- VARIAVEIS GLOBAIS ---------------------
+#define TABELA_ALIMENTOS "1000Shuffled.csv"
+#define TABELA_NUTRI "day1.csv"
+
+//----------------- VARIAVEIS GLOBAIS ---------------------
 int totalCalorias = 0;                                   //
-// --------------------------------------------------------
+int comp = 0;                                            //
+//---------------------------------------------------------
 
 typedef struct {
   char nome[50];
@@ -125,7 +129,7 @@ noABP *leituraArqCalorias(noABP *raiz) {
   int iteracao = 0, caloria;
   FILE *open_arq; // ponteiro para file
 
-  open_arq = fopen("1000Shuffled.csv", "r"); // abre o arquivo
+  open_arq = fopen(TABELA_ALIMENTOS, "r"); // abre o arquivo
 
   while (EOF != fscanf(open_arq, "%[^\n]\n", texto)) {
     arq = strtok(texto, ";");
@@ -150,7 +154,7 @@ void leituraArqNutri(noABP *raiz) {
   int iteracao = 0, porcao;
   FILE *open_arq; // ponteiro para file
 
-  open_arq = fopen("day1.csv", "r"); // abre o arquivo
+  open_arq = fopen(TABELA_NUTRI, "r"); // abre o arquivo
 
   while (EOF != fscanf(open_arq, "%[^\n]\n", texto)) {
     arq = strtok(texto, ";");
@@ -173,11 +177,14 @@ void leituraArqNutri(noABP *raiz) {
 
 int procuraABP(noABP *raiz, char *nomeAlimento, int porcao) {
   while (raiz != NULL) {
+    comp++;
     if (strcmp(nomeAlimento, raiz->alimento.nome) == 0) { // se o nome do alimento for igual ao nome do alimento do nodo
       exitAlimentoCaloria(nomeAlimento, raiz->alimento.caloria, porcao);
       return 1; // se achou vai retornar verdadeiro
+      comp++;
     } else if (strcmp(nomeAlimento, raiz->alimento.nome) > 0) { // se a letra do nome do alimento for maior q a letra do alimento do nodo vai para a direita
       raiz = raiz->dir;
+      comp++;
     } else {  // se a letra do nome do alimento for menor q a letra do alimento do nodo vai para a esquerda
       raiz = raiz->esq;
     }
@@ -191,8 +198,8 @@ void exitAlimentoCaloria(char *nomeAlimento, int porcaoNutri, int caloriaAliment
   quantidadeCalorias = (caloriaAlimento * porcaoNutri) / 100; //regra de 3 para calculo das calorias ingeridas
   totalCalorias += quantidadeCalorias;
 
-  printf("quantidade de calorias ingeridas no alimento %s = %d\n", nomeAlimento, quantidadeCalorias);
-  //printf("total calorias = %d\n", totalCalorias); // totalCalorias eh uma variavel global
+  //printf("quantidade de calorias ingeridas no alimento %s = %d\n", nomeAlimento, quantidadeCalorias);
+  printf("total calorias = %d\n", totalCalorias); // totalCalorias eh uma variavel global
 }
 
 int main() {
@@ -200,7 +207,7 @@ int main() {
 
   raiz = leituraArqCalorias(raiz);
   leituraArqNutri(raiz);
-
+  printf("quantidade de comparacoes = %d", comp);
 
   /*raiz = leituraArqCalorias(raiz);
   // imprimir_versao_1(raiz);
