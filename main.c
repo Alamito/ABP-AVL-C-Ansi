@@ -224,6 +224,7 @@ void informacoesTXT(noABP *raiz, FILE *arq_exit, short flag) {
     fprintf(arq_exit, "%d calorias consumidas no dia.\n\n", totalCalorias);
     fputs("======== ESTATÍSTICAS ABP ============\n", arq_exit);
     fprintf(arq_exit, "Numero de Nodos: %d\n", quantidade_nos(raiz));
+    fprintf(arq_exit, "Numero de Nodos folhas: %d\n", quantidade_folhas(raiz));
     fprintf(arq_exit, "Altura: %d\n", altura(raiz));
     fprintf(arq_exit, "Rotacoes: 0\n");
     fprintf(arq_exit, "Comparacoes: %d\n\n", comp);
@@ -236,16 +237,8 @@ int main() {
 
   raiz = leituraArqCalorias(raiz);
   leituraArqNutri(raiz);
-  printf("quantidade de comparacoes = %d", comp);
 
-  /*raiz = leituraArqCalorias(raiz);
-  // imprimir_versao_1(raiz);
   //Desenha(raiz, 1);
-  //printf("%d", raiz->alimento.caloria);
-  printf("\n");
-  printf("folhas = %d | nos = %d | altura = %d", quantidade_folhas(raiz),
-         quantidade_nos(raiz), altura(raiz));
-  printf("\n");*/
 
   system("pause");
   system("cls");
