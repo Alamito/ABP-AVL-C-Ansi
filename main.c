@@ -152,6 +152,8 @@ void leituraArqNutri(noABP *raiz) {
   open_arq = fopen(TABELA_NUTRI, "r"); // abre o arquivo
   arq_exit = fopen("caloriasIngeridas.txt", "w");
 
+  informacoesTXT(raiz, arq_exit, 1);
+
   while (EOF != fscanf(open_arq, "%[^\n]\n", texto)) {
     arq = strtok(texto, ";");
     while (arq != NULL) {
@@ -168,6 +170,7 @@ void leituraArqNutri(noABP *raiz) {
       arq = strtok(NULL, ";");
     }
   }
+  informacoesTXT(raiz, arq_exit, 2);
   fclose(open_arq);
   fclose(arq_exit);
 }
@@ -206,6 +209,26 @@ void exitAlimentoCaloria(char *nomeAlimento, int porcaoNutri, int caloriaAliment
   // printf("quantidade de calorias ingeridas no alimento %s = %d\n",
   // nomeAlimento, quantidadeCalorias);
   printf("total calorias = %d\n", totalCalorias); // totalCalorias eh uma variavel global
+}
+
+void informacoesTXT(noABP *raiz, FILE *arq_exit, short flag) {
+  if (flag == 1) {
+    fputs("Calorias calculada para ", arq_exit);
+    fputs(TABELA_NUTRI, arq_exit);
+    fputs(" usando a tabela ", arq_exit);
+    fputs(TABELA_ALIMENTOS, arq_exit);
+    fputs("\n\n", arq_exit);
+  } else if (flag == 2) {
+    fputs("\n", arq_exit);
+    fputs("Total de ", arq_exit);
+    fprintf(arq_exit, "%d calorias consumidas no dia.\n\n", totalCalorias);
+    fputs("======== ESTATÍSTICAS ABP ============\n", arq_exit);
+    fprintf(arq_exit, "Numero de Nodos: %d\n", quantidade_nos(raiz));
+    fprintf(arq_exit, "Altura: %d\n", altura(raiz));
+    fprintf(arq_exit, "Rotacoes: 0\n");
+    fprintf(arq_exit, "Comparacoes: %d\n\n", comp);
+    fputs("======== ESTATÍSTICAS AVL ============", arq_exit);
+  }
 }
 
 int main() {
