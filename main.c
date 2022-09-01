@@ -146,7 +146,8 @@ noABP *leituraArqCalorias(noABP *raiz) {
 
 void leituraArqNutri(noABP *raiz) {
   char *texto[50], nomeAlimento[50], *arq;
-  int iteracao = 0, porcao;
+  short iteracao = 0;
+  int porcao;
   FILE *open_arq, *arq_exit; // ponteiro para file
 
   open_arq = fopen(TABELA_NUTRI, "r"); // abre o arquivo
@@ -199,16 +200,13 @@ void exitAlimentoCaloria(char *nomeAlimento, int porcaoNutri, int caloriaAliment
   quantidadeCalorias = (caloriaAlimento * porcaoNutri) / 100; // regra de 3 para calculo das calorias ingeridas
   totalCalorias += quantidadeCalorias;
 
-  fputs("Quantidade de calorias ingeridas pelo alimento ", arq_exit);
+  fprintf(arq_exit, "%dg de ", caloriaAlimento);
   fputs(nomeAlimento, arq_exit);
+  fprintf(arq_exit, " (%d calorias por 100g)", porcaoNutri);
   fputs(" = ", arq_exit);
-  fprintf(arq_exit, "%d", quantidadeCalorias);
+  fprintf(arq_exit, "%d calorias", caloriaAlimento, quantidadeCalorias);
   fputs("\n", arq_exit);
 
-
-  // printf("quantidade de calorias ingeridas no alimento %s = %d\n",
-  // nomeAlimento, quantidadeCalorias);
-  printf("total calorias = %d\n", totalCalorias); // totalCalorias eh uma variavel global
 }
 
 void informacoesTXT(noABP *raiz, FILE *arq_exit, short flag) {
@@ -221,13 +219,13 @@ void informacoesTXT(noABP *raiz, FILE *arq_exit, short flag) {
   } else if (flag == 2) {
     fputs("\n", arq_exit);
     fputs("Total de ", arq_exit);
-    fprintf(arq_exit, "%d calorias consumidas no dia.\n\n", totalCalorias);
+    fprintf(arq_exit, "%d calorias consumidas no dia.\n\n", totalCalorias); // totalCalorias eh uma variavel global
     fputs("======== ESTATÍSTICAS ABP ============\n", arq_exit);
     fprintf(arq_exit, "Numero de Nodos: %d\n", quantidade_nos(raiz));
     fprintf(arq_exit, "Numero de Nodos folhas: %d\n", quantidade_folhas(raiz));
     fprintf(arq_exit, "Altura: %d\n", altura(raiz));
-    fprintf(arq_exit, "Rotacoes: 0\n");
-    fprintf(arq_exit, "Comparacoes: %d\n\n", comp);
+    fprintf(arq_exit, "Rotações: 0\n");
+    fprintf(arq_exit, "Comparações: %d\n\n", comp);
     fputs("======== ESTATÍSTICAS AVL ============", arq_exit);
   }
 }
