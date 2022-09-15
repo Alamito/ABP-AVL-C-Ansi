@@ -151,7 +151,7 @@ void leituraArqNutri(noABP *raiz) {
   FILE *open_arq, *arq_exit; // ponteiro para file
 
   open_arq = fopen(TABELA_NUTRI, "r"); // abre o arquivo
-  arq_exit = fopen("caloriasIngeridas.txt", "w");
+  arq_exit = fopen("caloriasIngeridasABP.txt", "w");
 
   informacoesTXT(raiz, arq_exit, 1);
 
@@ -226,7 +226,6 @@ void informacoesTXT(noABP *raiz, FILE *arq_exit, short flag) {
     fprintf(arq_exit, "Altura: %d\n", altura(raiz));
     fprintf(arq_exit, "Rotações: 0\n");
     fprintf(arq_exit, "Comparações: %d\n\n", comp);
-    fputs("======== ESTATÍSTICAS AVL ============", arq_exit);
   }
 }
 
@@ -236,7 +235,7 @@ int main() {
   raiz = leituraArqCalorias(raiz);
   leituraArqNutri(raiz);
 
-  //Desenha(raiz, 1); abcdef
+  //Desenha(raiz, 1); 
 
   system("pause");
   system("cls");
