@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #define TABELA_ALIMENTOS "1000Shuffled.csv"
 #define TABELA_NUTRI "day1.csv"
@@ -318,13 +319,14 @@ void informacoesTXT(noAVL *raiz, FILE *arq_exit, short flag) {
 }
 
 int main() {
+  clock_t timeExecution = clock();
   noAVL *raiz = NULL;
 
   raiz = leituraArqCalorias(raiz);
   leituraArqNutri(raiz);
 
   //Desenha(raiz, 1);
-
+  printf("%.3f\n", (double)(clock() - timeExecution) / CLOCKS_PER_SEC);
   system("pause");
   system("cls");
 
