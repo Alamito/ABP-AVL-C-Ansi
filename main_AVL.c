@@ -1,3 +1,4 @@
+#include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -206,7 +207,7 @@ Alimento ler_alimento(char *nomeAlimento, int calAlimento) {
   return alimento;
 }
 
-noAVL *leituraArqCalorias(noAVL *raiz) {
+noAVL *leituraArqCalorias(noAVL *raiz, char nomeArquivo[]) {
   char *texto[50], nomeAlimento[50], *arq;
   int iteracao = 0, caloria;
   FILE *open_arq; // ponteiro para file
@@ -231,14 +232,14 @@ noAVL *leituraArqCalorias(noAVL *raiz) {
   return raiz;
 }
 
-void leituraArqNutri(noAVL *raiz) {
+void leituraArqNutri(noAVL *raiz, char nomeArqIngerido[], char nomeSaida[]) {
   char *texto[50], nomeAlimento[50], *arq;
   short iteracao = 0;
   int porcao;
   FILE *open_arq, *arq_exit; // ponteiro para file
 
   open_arq = fopen(TABELA_NUTRI, "r"); // abre o arquivo
-  arq_exit = fopen("caloriasIngeridasAVL.txt", "w");
+  arq_exit = fopen(nomeSaida, "w");
 
   informacoesTXT(raiz, arq_exit, 1);
 
@@ -318,17 +319,31 @@ void informacoesTXT(noAVL *raiz, FILE *arq_exit, short flag) {
   }
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+  setlocale(LC_ALL, "");
+  //----- PASSAGEM DE PARAMETROS PELA main -----//
+  char nomeArqCaloria[50];
+  char nomeArqIngerido[50];
+  char nomeOutput[50];
+  strcpy(nomeArqCaloria, argv[1]);
+  strcpy(nomeArqIngerido, argv[2]);
+  strcpy(nomeOutput, argv[3]);
+  //--------------------------------------------//
+
   clock_t timeExecution = clock();
   noAVL *raiz = NULL;
 
-  raiz = leituraArqCalorias(raiz);
-  leituraArqNutri(raiz);
+  if (argc != 4) {
+    printf("Numero incorreto de parametros!\n");
+    printf("Insira: <.exe> <arq_entrada_caloria> <arq_entrada_ingerido> <arq_saida>");
+  }
 
-  //Desenha(raiz, 1);
-  printf("%.3f\n", (double)(clock() - timeExecution) / CLOCKS_PER_SEC);
+  raiz = leituraArqCalorias(raiz, nomeArqCaloria);
+  leituraArqNutri(raiz, nomeArqIngerido, nomeOutput);
+
+  // Desenha(raiz, 1);
+  printf("%.3f seg\n", (double)(clock() - timeExecution) / CLOCKS_PER_SEC);
   system("pause");
   system("cls");
-
   return 0;
 }
