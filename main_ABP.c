@@ -184,7 +184,7 @@ void leituraArqNutri(noABP *raiz, char nomeArqIngerido[], char nomeSaida[], char
       arq = strtok(NULL, ";");                             // necessario para obter os proximos tokens do arquivo
     }
   }
-  informacoesTXT(raiz, arq_exit, 2);                       // funcao com parametro 2 para escrever as estatisticas no arquivo de saida
+  informacoesTXT(raiz, arq_exit, 2, nomeArqIngerido, nomeArquivo);                       // funcao com parametro 2 para escrever as estatisticas no arquivo de saida
   fclose(open_arq);
   fclose(arq_exit);
 }

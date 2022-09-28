@@ -5,7 +5,7 @@
 #include <time.h>
 
 #define TABELA_ALIMENTOS "1000Shuffled.csv"
-#define TABELA_NUTRI "day1.csv"
+//#define TABELA_NUTRI "day1.csv"
 
 //----------------- VARIAVEIS GLOBAIS ---------------------//
 int rotacoesDir = 0;
@@ -220,7 +220,7 @@ noAVL *leituraArqCalorias(noAVL *raiz, char nomeArquivo[]) {
   int iteracao = 0, caloria;
   FILE *open_arq;                                       // ponteiro para file
 
-  open_arq = fopen(TABELA_ALIMENTOS, "r");              // abre o arquivo
+  open_arq = fopen(nomeArquivo, "r"); // abre o arquivo
 
   while (EOF != fscanf(open_arq, "%[^\n]\n", texto)) {  // enquanto nao chegar no final do arquivo faz a leitura ate a quebra de texto
     arq = strtok(texto, ";");                           // divide a string pelo delimitador ";" 
@@ -241,7 +241,7 @@ noAVL *leituraArqCalorias(noAVL *raiz, char nomeArquivo[]) {
 }
 
 // leitura do arquivo com o alimento e a quantidade de gramas ingeridas
-void leituraArqNutri(noAVL *raiz, char nomeArqIngerido[], char nomeSaida[]) {
+void leituraArqNutri(noAVL *raiz, char nomeArqIngerido[], char nomeSaida[], char nomeArquivo[]) {
   char *texto[50], nomeAlimento[50], *arq;
   short iteracao = 0;
   int porcao;
@@ -250,7 +250,7 @@ void leituraArqNutri(noAVL *raiz, char nomeArqIngerido[], char nomeSaida[]) {
   open_arq = fopen(nomeArqIngerido, "r");                   // abre o arquivo
   arq_exit = fopen(nomeSaida, "w");
 
-  informacoesTXT(raiz, arq_exit, 1);                        // chama funcao com parametro 1 para escrever o texto do titulo do arquivo
+  informacoesTXT(raiz, arq_exit, 1, nomeArqIngerido, nomeArquivo);                        // chama funcao com parametro 1 para escrever o texto do titulo do arquivo
 
   while (EOF != fscanf(open_arq, "%[^\n]\n", texto)) {      // enquanto nao chegar no final do arquivo faz a leitura ate a quebra de texto
     arq = strtok(texto, ";");                               // divide a string pelo delimitador ";"
@@ -268,7 +268,7 @@ void leituraArqNutri(noAVL *raiz, char nomeArqIngerido[], char nomeSaida[]) {
       arq = strtok(NULL, ";");                              // necessario para obter os proximos tokens do arquivo       
     }
   }
-  informacoesTXT(raiz, arq_exit, 2);                        // funcao com parametro 2 para escrever as estatisticas no arquivo de saida
+  informacoesTXT(raiz, arq_exit, 2, nomeArqIngerido, nomeArquivo);                        // funcao com parametro 2 para escrever as estatisticas no arquivo de saida
   fclose(open_arq);
   fclose(arq_exit);
 }
@@ -308,12 +308,12 @@ void exitAlimentoCaloria(char *nomeAlimento, int porcaoNutri, int caloriaAliment
 }
 
 // escreve informacoes de titulo e de estatisticas de comparacoes, altura, nos folhas, etc
-void informacoesTXT(noAVL *raiz, FILE *arq_exit, short flag) {
+void informacoesTXT(noAVL *raiz, FILE *arq_exit, short flag, char nomeArqIngerido[], char nomeArquivo[]) {
   if (flag == 1) {
     fputs("Calorias calculada para ", arq_exit);
-    fputs(TABELA_NUTRI, arq_exit);
+    fputs(nomeArqIngerido, arq_exit);
     fputs(" usando a tabela ", arq_exit);
-    fputs(TABELA_ALIMENTOS, arq_exit);
+    fputs(nomeArquivo, arq_exit);
     fputs("\n\n", arq_exit);
   } else if (flag == 2) {
     fputs("\n", arq_exit);
@@ -351,7 +351,7 @@ int main(int argc, char *argv[]) {
   } else {
     raiz = leituraArqCalorias(raiz, nomeArqCaloria);
     printf("%.1f ms - Tempo de armazenar na arvore \n", (double)(clock() - timeExecution));
-    leituraArqNutri(raiz, nomeArqIngerido, nomeOutput);
+    leituraArqNutri(raiz, nomeArqIngerido, nomeOutput, nomeArqCaloria);
 
     // Desenha(raiz, 1);
     printf("%.1f ms - Tempo de execucao\n", (double)(clock() - timeExecution));
