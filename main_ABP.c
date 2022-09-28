@@ -7,22 +7,25 @@
 #define TABELA_ALIMENTOS "1000Shuffled.csv"
 #define TABELA_NUTRI "day1.csv"
 
-//----------------- VARIAVEIS GLOBAIS ---------------------
+//----------------- VARIAVEIS GLOBAIS ---------------------//
 int totalCalorias = 0;
 int comp = 1; // inicia com 1 por causa do while que na comparacao final nao soma 1 na variavel
-//---------------------------------------------------------
+//---------------------------------------------------------//
 
-typedef struct {
+// estrutura do alimento que sera inserido na arvore
+typedef struct { 
   char nome[50];
   int caloria;
 } Alimento;
 
-typedef struct no { // estrutura da arvore
+// estrutura da arvore ABP
+typedef struct no { 
   Alimento alimento;
   struct no *dir;
   struct no *esq;
 } noABP;
 
+// leitura do alimento colocando na struct
 Alimento ler_alimento(char *nomeAlimento, int calAlimento) {
   Alimento alimento;
   strcpy(alimento.nome, nomeAlimento);
@@ -30,11 +33,13 @@ Alimento ler_alimento(char *nomeAlimento, int calAlimento) {
   return alimento;
 }
 
+// imprime a arvore
 void imprimir_alimento(Alimento alimento) {
   printf("\tAlimento: %s\tcaloria: %d\n", alimento.nome, alimento.caloria);
 }
 
-noABP *inserir_versao_1(noABP *raiz, Alimento a) { // insere de acordo com a menor caloria para a maior
+// insere de acordo com a menor caloria para a maior (nao utilizado)
+noABP *inserir_versao_1(noABP *raiz, Alimento a) { 
   if (raiz == NULL) {
     noABP *aux = malloc(sizeof(noABP));
     aux->alimento = a;
@@ -50,7 +55,8 @@ noABP *inserir_versao_1(noABP *raiz, Alimento a) { // insere de acordo com a men
   }
 }
 
-noABP *inserir_versao_2(noABP *raiz, Alimento a) { // insere de acordo com o alfabeto
+// insere de acordo com o alfabeto em ordem crescente (A - Z)
+noABP *inserir_versao_2(noABP *raiz, Alimento a) { 
   if (raiz == NULL) {
     noABP *aux = malloc(sizeof(noABP));
     aux->alimento = a;
@@ -58,17 +64,18 @@ noABP *inserir_versao_2(noABP *raiz, Alimento a) { // insere de acordo com o alf
     aux->dir = NULL;
     return aux;
   } else {
-    if (strcmp(a.nome, raiz->alimento.nome) < 0) { // se o novo no comecar com uma letra menor
+    if (strcmp(a.nome, raiz->alimento.nome) < 0) { // se o novo alimento comecar com uma letra menor... insere a esquerda
       raiz->esq = inserir_versao_2(raiz->esq, a);
-    } else if (strcmp(a.nome, raiz->alimento.nome) == 0) { // se forem iguais
+    } else if (strcmp(a.nome, raiz->alimento.nome) == 0) { // se os nomes forem iguais... insere a direita
       raiz->esq = inserir_versao_2(raiz->dir, a);
-    } else { // se o novo no comecar com uma letra maior
+    } else { // se o novo alimento comecar com uma letra maior... insere a direita
       raiz->dir = inserir_versao_2(raiz->dir, a);
     }
     return raiz;
   }
 }
 
+// calcula altura da arvore
 int altura(noABP *raiz) {
   if (raiz == NULL) {
     return -1;
@@ -82,6 +89,7 @@ int altura(noABP *raiz) {
   }
 }
 
+// calcula a quantidade de nos
 int quantidade_nos(noABP *raiz) {
   if (raiz == NULL)
     return 0;
@@ -89,6 +97,7 @@ int quantidade_nos(noABP *raiz) {
     return 1 + quantidade_nos(raiz->esq) + quantidade_nos(raiz->dir);
 }
 
+// calcula a quantidade de nos folhas
 int quantidade_folhas(noABP *raiz) {
   if (raiz == NULL)
     return 0;
@@ -98,6 +107,7 @@ int quantidade_folhas(noABP *raiz) {
     return quantidade_folhas(raiz->esq) + quantidade_folhas(raiz->dir);
 }
 
+// imprime a arvore no terminal
 void imprimir_versao_1(noABP *raiz) { // 50 25 30 100
   if (raiz) {
     imprimir_alimento(raiz->alimento);
@@ -106,6 +116,7 @@ void imprimir_versao_1(noABP *raiz) { // 50 25 30 100
   }
 }
 
+// imprime a arvore indicando o nivel
 void Desenha(noABP *a, int nivel) { // funcao que imprime a arvore de um modo mais intuitivo
   int x;
   if (a != NULL) {
@@ -121,80 +132,84 @@ void Desenha(noABP *a, int nivel) { // funcao que imprime a arvore de um modo ma
   }
 }
 
+// realiza a leitura do arquivo com os alimentos e quantidade de calorias
 noABP *leituraArqCalorias(noABP *raiz, char nomeArquivo[]) {
   char *texto[50], nomeAlimento[50], *arq;
   int iteracao = 0, caloria;
-  FILE *open_arq; // ponteiro para file
+  FILE *open_arq;                                      // ponteiro para file
 
-  open_arq = fopen(nomeArquivo, "r"); // abre o arquivo
+  open_arq = fopen(nomeArquivo, "r");                  // abre o arquivo
 
-  while (EOF != fscanf(open_arq, "%[^\n]\n", texto)) {
-    arq = strtok(texto, ";");
-    while (arq != NULL) {
-      if (iteracao == 0) { // leitura do nome do alimento;
-        strcpy(nomeAlimento, arq);
+  while (EOF != fscanf(open_arq, "%[^\n]\n", texto)) { // enquanto nao chegar no final do arquivo faz a leitura ate a quebra de texto
+    arq = strtok(texto, ";");                          // divide a string pelo delimitador ";"
+    while (arq != NULL) {                              // quando iteracao = 0 le o nome do alimento... iteracao = 1 le a caloria do alimento
+      if (iteracao == 0) {                             // leitura do nome do alimento
+        strcpy(nomeAlimento, arq);                     // copia o nome do alimento do arquivo para a variavel nomeAlimento
         iteracao = 1;
-      } else { // leitura da caloria
-        caloria = atoi(arq);
-        raiz = inserir_versao_2(raiz, ler_alimento(nomeAlimento, caloria));
+      } else {                                        // leitura da caloria
+        caloria = atoi(arq);                          // transforma em inteiro a quantidade de caloria do alimento
+        raiz = inserir_versao_2(raiz, ler_alimento(nomeAlimento, caloria)); // insere na arvore
         iteracao = 0;
       }
-      arq = strtok(NULL, ";");
+      arq = strtok(NULL, ";"); // necessario para obter os proximos tokens do arquivo
     }
   }
   fclose(open_arq);
   return raiz;
 }
 
+// leitura do arquivo com o alimento e a quantidade de gramas ingeridas
 void leituraArqNutri(noABP *raiz, char nomeArqIngerido[], char nomeSaida[]) {
   char *texto[50], nomeAlimento[50], *arq;
   short iteracao = 0;
   int porcao;
-  FILE *open_arq, *arq_exit; // ponteiro para file
+  FILE *open_arq, *arq_exit;                              // ponteiro para file
 
-  open_arq = fopen(TABELA_NUTRI, "r"); // abre o arquivo
+  open_arq = fopen(nomeArqIngerido, "r");                 // abre o arquivo
   arq_exit = fopen(nomeSaida, "w");
 
-  informacoesTXT(raiz, arq_exit, 1);
+  informacoesTXT(raiz, arq_exit, 1);                      // chama funcao com parametro 1 para escrever o texto do titulo do arquivo
 
-  while (EOF != fscanf(open_arq, "%[^\n]\n", texto)) {
-    arq = strtok(texto, ";");
-    while (arq != NULL) {
-      if (iteracao == 0) { // leitura do nome do alimento;
-        strcpy(nomeAlimento, arq);
+  while (EOF != fscanf(open_arq, "%[^\n]\n", texto)) {    // enquanto nao chegar no final do arquivo faz a leitura ate a quebra de texto
+    arq = strtok(texto, ";");                             // divide a string pelo delimitador ";"
+    while (arq != NULL) {                                 // quando iteracao = 0 le o nome do alimento... iteracao = 1 le a caloria do alimento
+      if (iteracao == 0) {                                // leitura do nome do alimento
+        strcpy(nomeAlimento, arq);                        // copia o nome do alimento do arquivo para a variavel nomeAlimento
         iteracao = 1;
-      } else { // leitura da porcao
-        porcao = atoi(arq);
+      } else {                                            // leitura da porcao ingerida
+        porcao = atoi(arq);                               // transforma em inteiro
         iteracao = 0;
-        if (!(procuraABP(raiz, nomeAlimento, porcao, arq_exit))) { // procura na ABP o nome do alimento
+        if (!(procuraABP(raiz, nomeAlimento, porcao, arq_exit))) { // procura na ABP o nome do alimento... se achar retorna true... se nao achar retorna false
           printf("Alimento %s nao encontrado!\n", nomeAlimento);
         }
       }
-      arq = strtok(NULL, ";");
+      arq = strtok(NULL, ";");                             // necessario para obter os proximos tokens do arquivo
     }
   }
-  informacoesTXT(raiz, arq_exit, 2);
+  informacoesTXT(raiz, arq_exit, 2);                       // funcao com parametro 2 para escrever as estatisticas no arquivo de saida
   fclose(open_arq);
   fclose(arq_exit);
 }
 
+// procura na arvore o alimento encontrado na funcao leituraArqNutri
 int procuraABP(noABP *raiz, char *nomeAlimento, int porcao, FILE *arq_exit) {
   while (raiz != NULL) {
     comp++;
-    if (strcmp(nomeAlimento, raiz->alimento.nome) == 0) { // se o nome do alimento for igual ao nome do alimento do nodo
-      exitAlimentoCaloria(nomeAlimento, raiz->alimento.caloria, porcao, arq_exit);
-      return 1; // se achou vai retornar verdadeiro
+    if (strcmp(nomeAlimento, raiz->alimento.nome) == 0) {           // se o nome do alimento for igual ao nome do alimento do nodo
+      exitAlimentoCaloria(nomeAlimento, raiz->alimento.caloria, porcao, arq_exit); // escreve no arquivo de saida a estatistica do alimento encontrado
+      return 1;                                                     // se achou vai retornar verdadeiro
       comp++;
-    } else if (strcmp(nomeAlimento, raiz->alimento.nome) > 0) { // se a letra do nome do alimento for maior q a letra do alimento do nodo vai para a direita
+    } else if (strcmp(nomeAlimento, raiz->alimento.nome) > 0) {     // se a letra do nome do alimento for maior q a letra do alimento do nodo vai para a direita
       raiz = raiz->dir;
       comp++;
-    } else { // se a letra do nome do alimento for menor q a letra do alimento do nodo vai para a esquerda
+    } else {                                                        // se a letra do nome do alimento for menor q a letra do alimento do nodo vai para a esquerda
       raiz = raiz->esq;
     }
   }
   return 0; // se nao achou vai retornar falso
 }
 
+// escreve no arquivo de saida as informacoes do alimento encontrado
 void exitAlimentoCaloria(char *nomeAlimento, int porcaoNutri, int caloriaAlimento, FILE *arq_exit) {
   int quantidadeCalorias;
   FILE *open_arq;
@@ -211,6 +226,7 @@ void exitAlimentoCaloria(char *nomeAlimento, int porcaoNutri, int caloriaAliment
 
 }
 
+// escreve informacoes de titulo e de estatisticas de comparacoes, altura, nos folhas, etc
 void informacoesTXT(noABP *raiz, FILE *arq_exit, short flag) {
   if (flag == 1) {
     fputs("Calorias calculada para ", arq_exit);
@@ -242,20 +258,21 @@ int main(int argc, char *argv[]) {
   strcpy (nomeOutput, argv[3]);
 //--------------------------------------------//
 
-  clock_t timeExecution = clock();
+  clock_t timeExecution = clock();  // inicia a contagem de tempo
   noABP *raiz = NULL;
 
-  if (argc != 4) {
+  if (argc != 4) {  // sao necessarios 4 parametros para o programa funcionar como deveria
     printf("Numero incorreto de parametros!\n");
-    printf("Insira: <.exe> <arq_entrada_caloria> <arq_entrada_ingerido> <arq_saida>");
+    printf("Insira: <programa> <arq_entrada_caloria> <arq_entrada_ingerido> <arq_saida>");
+  } else {
+    raiz = leituraArqCalorias(raiz, nomeArqCaloria);
+    printf("%.1f ms - Tempo de armazenar na arvore \n", (double)(clock() - timeExecution));
+    leituraArqNutri(raiz, nomeArqIngerido, nomeOutput);
+
+    // Desenha(raiz, 1);
+    printf("%.1f ms - Tempo de armazenar, procurar e escrever no arquivo \n", (double)(clock() - timeExecution)); // printa o tempo de execucao do programa
+    system("pause");
+    system("cls");
   }
-
-  raiz = leituraArqCalorias(raiz, nomeArqCaloria);
-  leituraArqNutri(raiz, nomeArqIngerido, nomeOutput);
-
-  //Desenha(raiz, 1);
-  printf("%.3f seg\n", (double)(clock() - timeExecution) / CLOCKS_PER_SEC);
-  system("pause");
-  system("cls");
   return 0;
 }
