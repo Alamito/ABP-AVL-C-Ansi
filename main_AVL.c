@@ -176,9 +176,7 @@ noAVL *inserir(noAVL *raiz, Alimento a) {
     } else {
       if (strcmp(a.nome, raiz->alimento.nome) < 0) { // se o novo alimento comecar com uma letra menor... insere a esquerda
         raiz->esq = inserir(raiz->esq, a);
-      } else if (strcmp(a.nome, raiz->alimento.nome) == 0) { // se os nomes forem iguais... insere a direita
-        raiz->esq = inserir(raiz->dir, a);
-      } else { // se o novo alimento comecar com uma letra maior... insere a direita
+      } else if (strcmp(a.nome, raiz->alimento.nome) > 0) { // se o novo alimento comecar com uma letra maior... insere a direita
         raiz->dir = inserir(raiz->dir, a);
       }
     }

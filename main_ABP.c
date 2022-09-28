@@ -66,11 +66,9 @@ noABP *inserir_versao_2(noABP *raiz, Alimento a) {
   } else {
     if (strcmp(a.nome, raiz->alimento.nome) < 0) { // se o novo alimento comecar com uma letra menor... insere a esquerda
       raiz->esq = inserir_versao_2(raiz->esq, a);
-    } else if (strcmp(a.nome, raiz->alimento.nome) == 0) { // se os nomes forem iguais... insere a direita
-      raiz->esq = inserir_versao_2(raiz->dir, a);
-    } else { // se o novo alimento comecar com uma letra maior... insere a direita
+    } else if (strcmp(a.nome, raiz->alimento.nome) > 0) { // se o novo alimento comecar com uma letra maior... insere a direita
       raiz->dir = inserir_versao_2(raiz->dir, a);
-    }
+    } 
     return raiz;
   }
 }
@@ -159,7 +157,7 @@ noABP *leituraArqCalorias(noABP *raiz, char nomeArquivo[]) {
 }
 
 // leitura do arquivo com o alimento e a quantidade de gramas ingeridas
-void leituraArqNutri(noABP *raiz, char nomeArqIngerido[], char nomeSaida[]) {
+void leituraArqNutri(noABP *raiz, char nomeArqIngerido[], char nomeSaida[], char nomeArquivo[]) {
   char *texto[50], nomeAlimento[50], *arq;
   short iteracao = 0;
   int porcao;
@@ -168,7 +166,7 @@ void leituraArqNutri(noABP *raiz, char nomeArqIngerido[], char nomeSaida[]) {
   open_arq = fopen(nomeArqIngerido, "r");                 // abre o arquivo
   arq_exit = fopen(nomeSaida, "w");
 
-  informacoesTXT(raiz, arq_exit, 1);                      // chama funcao com parametro 1 para escrever o texto do titulo do arquivo
+  informacoesTXT(raiz, arq_exit, 1, nomeArqIngerido, nomeArquivo);                      // chama funcao com parametro 1 para escrever o texto do titulo do arquivo
 
   while (EOF != fscanf(open_arq, "%[^\n]\n", texto)) {    // enquanto nao chegar no final do arquivo faz a leitura ate a quebra de texto
     arq = strtok(texto, ";");                             // divide a string pelo delimitador ";"
@@ -227,12 +225,12 @@ void exitAlimentoCaloria(char *nomeAlimento, int porcaoNutri, int caloriaAliment
 }
 
 // escreve informacoes de titulo e de estatisticas de comparacoes, altura, nos folhas, etc
-void informacoesTXT(noABP *raiz, FILE *arq_exit, short flag) {
+void informacoesTXT(noABP *raiz, FILE *arq_exit, short flag, char nomeArqIngerido[], char nomeArquivo[]) {
   if (flag == 1) {
     fputs("Calorias calculada para ", arq_exit);
-    fputs(TABELA_NUTRI, arq_exit);
+    fputs(nomeArqIngerido, arq_exit);
     fputs(" usando a tabela ", arq_exit);
-    fputs(TABELA_ALIMENTOS, arq_exit);
+    fputs(nomeArquivo, arq_exit);
     fputs("\n\n", arq_exit);
   } else if (flag == 2) {
     fputs("\n", arq_exit);
@@ -267,7 +265,7 @@ int main(int argc, char *argv[]) {
   } else {
     raiz = leituraArqCalorias(raiz, nomeArqCaloria);
     printf("%.1f ms - Tempo de armazenar na arvore \n", (double)(clock() - timeExecution));
-    leituraArqNutri(raiz, nomeArqIngerido, nomeOutput);
+    leituraArqNutri(raiz, nomeArqIngerido, nomeOutput, nomeArqCaloria);
 
     // Desenha(raiz, 1);
     printf("%.1f ms - Tempo de armazenar, procurar e escrever no arquivo \n", (double)(clock() - timeExecution)); // printa o tempo de execucao do programa
