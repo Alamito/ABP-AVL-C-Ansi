@@ -354,7 +354,7 @@ int main(int argc, char *argv[]) {
     leituraArqNutri(raiz, nomeArqIngerido, nomeOutput, nomeArqCaloria);
 
     // Desenha(raiz, 1);
-    printf("%.1f ms - Tempo de execucao\n", (double)(clock() - timeExecution));
+    printf("%.1f ms - Tempo de armazenar, procurar e escrever no arquivo \n", (double)(clock() - timeExecution));
     system("pause");
     system("cls");
   }
