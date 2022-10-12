@@ -30,7 +30,7 @@ Utilizando main_AVL.exe com os mesmos arquivos anteriores, temos:
 # Como executar o projeto
 ```bash
 # clonar repositório
-git clone https://github.com/Alamito/ABP-AVL-C-Ansi
+git clone https://github.com/Alamito/ABP-AVL-C-Ansi.git
 
 # executar
 main_ABP.exe 1K.csv day1.csv <nome de saída>.txt
